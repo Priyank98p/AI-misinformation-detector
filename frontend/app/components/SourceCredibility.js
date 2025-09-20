@@ -13,8 +13,15 @@ export default function SourceCredibility() {
     const [error, setError] = useState(null);
 
     const handleAnalyze = async () => {
+        // Input validation
         if (!url.trim()) {
             setError('Please enter a URL to analyze');
+            return;
+        }
+
+        // URL validation
+        if (!isValidUrl(url.trim())) {
+            setError('Please enter a valid URL (e.g., https://example.com)');
             return;
         }
 
@@ -28,13 +35,40 @@ export default function SourceCredibility() {
             const response = await axios.post(`${API_URL}/api/analyze-text`, {
                 text: `Analyze the credibility of this source: ${url}`,
                 url: url.trim()
+            }, {
+                timeout: 30000 // 30 second timeout
             });
 
             setResult(response.data);
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to analyze source. Please try again.');
+            console.error('Source analysis error:', err);
+
+            // Handle different types of errors
+            if (err.code === 'ECONNABORTED') {
+                setError('Request timed out. The analysis is taking longer than expected. Please try again.');
+            } else if (err.response?.status === 429) {
+                setError('Too many requests. Please wait a moment and try again.');
+            } else if (err.response?.status === 400) {
+                setError(err.response.data.error || 'Invalid URL. Please check your input.');
+            } else if (err.response?.status >= 500) {
+                setError('Server error. Our analysis service is temporarily unavailable. Please try again later.');
+            } else if (!err.response) {
+                setError('Network error. Please check your internet connection and try again.');
+            } else {
+                setError(err.response?.data?.message || 'Failed to analyze source. Please try again.');
+            }
         } finally {
             setIsAnalyzing(false);
+        }
+    };
+
+    // URL validation helper
+    const isValidUrl = (string) => {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
         }
     };
 

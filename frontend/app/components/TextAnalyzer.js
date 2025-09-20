@@ -14,8 +14,21 @@ export default function TextAnalyzer() {
     const [error, setError] = useState(null);
 
     const handleAnalyze = async () => {
+        // Input validation
         if (!text.trim() && !url.trim()) {
             setError('Please enter some text or a URL to analyze');
+            return;
+        }
+
+        // Check for extremely long text
+        if (text.length > 10000) {
+            setError('Text is too long. Please limit to 10,000 characters or less.');
+            return;
+        }
+
+        // Basic URL validation
+        if (url.trim() && !isValidUrl(url.trim())) {
+            setError('Please enter a valid URL (e.g., https://example.com)');
             return;
         }
 
@@ -27,13 +40,40 @@ export default function TextAnalyzer() {
             const response = await axios.post(`${API_URL}/api/analyze-text`, {
                 text: text.trim(),
                 url: url.trim()
+            }, {
+                timeout: 30000 // 30 second timeout
             });
 
             setResult(response.data);
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to analyze content. Please try again.');
+            console.error('Analysis error:', err);
+
+            // Handle different types of errors
+            if (err.code === 'ECONNABORTED') {
+                setError('Request timed out. The analysis is taking longer than expected. Please try again.');
+            } else if (err.response?.status === 429) {
+                setError('Too many requests. Please wait a moment and try again.');
+            } else if (err.response?.status === 400) {
+                setError(err.response.data.error || 'Invalid input. Please check your text or URL.');
+            } else if (err.response?.status >= 500) {
+                setError('Server error. Our AI analysis service is temporarily unavailable. Please try again later.');
+            } else if (!err.response) {
+                setError('Network error. Please check your internet connection and try again.');
+            } else {
+                setError(err.response?.data?.message || 'Failed to analyze content. Please try again.');
+            }
         } finally {
             setIsAnalyzing(false);
+        }
+    };
+
+    // URL validation helper
+    const isValidUrl = (string) => {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
         }
     };
 
@@ -79,7 +119,18 @@ export default function TextAnalyzer() {
                             placeholder="Paste the article, claim, or text content you want to analyze..."
                             value={text}
                             onChange={(e) => setText(e.target.value)}
+                            maxLength={10000}
                         />
+                        <div className="flex justify-between items-center mt-1">
+                            <span className="text-xs text-gray-500">
+                                {text.length}/10,000 characters
+                            </span>
+                            {text.length > 8000 && (
+                                <span className="text-xs text-yellow-600">
+                                    ⚠️ Text is getting long
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     <div className="relative">
