@@ -6,7 +6,7 @@ A prototype that uses Google Cloud AI (Gemini API) to detect and analyze misinfo
 
 - **Text Analysis**: Analyze articles, claims, or any text content for misinformation
 - **Source Credibility**: Evaluate the reliability of news sources and URLs
-- **Counter-Narrative Generation**: Create educational content to counter misinformation
+- **Misinformation Trends**: Real-time dashboard showing trending misinformation topics with frequency and risk scores
 - **Interactive UI**: Modern, responsive interface built with TailwindCSS
 - **Real-time Analysis**: Fast AI-powered analysis using Google Cloud AI
 
@@ -108,24 +108,35 @@ Analyze text content for misinformation.
   "score": 0.85,
   "reason": ["List of analysis reasons"],
   "educational_tip": "Actionable advice",
-  "sources": ["Credible source URLs"],
-  "counter_narrative": {
-    "myth": "Misleading claim",
-    "fact": "Correct information",
-    "shareable_message": "Social media message"
-  }
+  "sources": ["Credible source URLs"]
 }
 ```
 
-### POST /api/generate-graphic
-Generate counter-narrative visual content.
+### GET /api/misinformation-trends
+Get trending misinformation topics with frequency and risk analysis.
 
-**Request:**
+**Response:**
 ```json
 {
-  "myth": "Misleading claim",
-  "fact": "Correct information",
-  "riskScore": "High"
+  "trends": [
+    {
+      "topic": "Health Misinformation",
+      "frequency": 5,
+      "average_risk_score": 0.9,
+      "posts": [
+        {
+          "text": "Sample post text",
+          "source": "Social Media",
+          "timestamp": "2024-01-01T00:00:00.000Z",
+          "risk_score": "High",
+          "score": 0.95
+        }
+      ]
+    }
+  ],
+  "total_posts_analyzed": 10,
+  "generated_at": "2024-01-01T00:00:00.000Z",
+  "time_range": "Last 48 hours"
 }
 ```
 
@@ -144,13 +155,37 @@ Generate counter-narrative visual content.
 - Source verification checklist
 - Alternative credible sources
 
-### Counter-Narrative
-- Myth vs Fact comparison
-- Shareable message generation
-- Visual content descriptions
+### Misinformation Trends
+- Real-time trending topics dashboard
+- Frequency analysis with interactive charts
+- Risk score visualization with color-coded badges
+- Expandable sample posts with source attribution
 - Best practices guidelines
 
 ## 🚀 Deployment
+
+### Quick Deployment Guide
+
+**For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+#### **URL Configuration:**
+- **Local Development**: `http://localhost:3001` (Backend) + `http://localhost:3000` (Frontend)
+- **Production**: Replace with your actual deployed URLs
+
+#### **Environment Variables:**
+
+**Backend (Cloud Run):**
+```env
+GOOGLE_API_KEY=your_google_api_key
+PORT=8080
+NODE_ENV=production
+ALLOWED_ORIGINS=https://your-vercel-app.vercel.app
+```
+
+**Frontend (Vercel):**
+```env
+NEXT_PUBLIC_API_URL=https://your-backend-service-url.run.app
+```
 
 ### Frontend (Vercel)
 1. Connect your GitHub repository to Vercel
