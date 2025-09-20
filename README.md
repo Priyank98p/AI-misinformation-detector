@@ -27,7 +27,7 @@ A prototype that uses Google Cloud AI (Gemini API) to detect and analyze misinfo
 ## 📁 Project Structure
 
 ```
-ai-misinformation-detector/
+AI-misinformation-detector/
 ├── frontend/                 # Next.js application
 │   ├── app/
 │   │   ├── components/      # React components
@@ -56,8 +56,8 @@ ai-misinformation-detector/
 
 1. **Clone and install dependencies:**
    ```bash
-   git clone <repository-url>
-   cd ai-misinformation-detector
+   git clone https://github.com/Priyank98p/AI-misinformation-detector.git
+   cd AI-misinformation-detector
    npm run install:all
    ```
 
@@ -162,52 +162,6 @@ Get trending misinformation topics with frequency and risk analysis.
 - Expandable sample posts with source attribution
 - Best practices guidelines
 
-## 🚀 Deployment
-
-### Quick Deployment Guide
-
-**For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
-
-#### **URL Configuration:**
-- **Local Development**: `http://localhost:3001` (Backend) + `http://localhost:3000` (Frontend)
-- **Production**: Replace with your actual deployed URLs
-
-#### **Environment Variables:**
-
-**Backend (Cloud Run):**
-```env
-GOOGLE_API_KEY=your_google_api_key
-PORT=8080
-NODE_ENV=production
-ALLOWED_ORIGINS=https://your-vercel-app.vercel.app
-```
-
-**Frontend (Vercel):**
-```env
-NEXT_PUBLIC_API_URL=https://your-backend-service-url.run.app
-```
-
-### Frontend (Vercel)
-1. Connect your GitHub repository to Vercel
-2. Set environment variable: `NEXT_PUBLIC_API_URL=https://your-backend-url`
-3. Deploy automatically on push to main branch
-
-### Backend (Google Cloud Run)
-1. Build Docker image:
-   ```bash
-   cd backend
-   docker build -t misinformation-detector-api .
-   ```
-
-2. Deploy to Cloud Run:
-   ```bash
-   gcloud run deploy misinformation-detector-api \
-     --image gcr.io/PROJECT_ID/misinformation-detector-api \
-     --platform managed \
-     --region us-central1 \
-     --allow-unauthenticated
-   ```
-
 ## 🔑 Environment Variables
 
 | Variable | Description | Required |
@@ -240,10 +194,11 @@ NEXT_PUBLIC_API_URL=https://your-backend-service-url.run.app
    - Domain evaluation
    - Verification checklist
 
-3. **Counter-Narrative** ✅
-   - Myth vs Fact generation
-   - Shareable messages
-   - Visual descriptions
+3. **Misinformation Trends** ✅
+   - Trending topics detection
+   - Frequency analysis (how often misinformation appears)
+   - Risk-level aggregation (average risk scores)
+   - Interactive charts & visual insights
 
 ## 🛡️ Security & Privacy
 
@@ -252,20 +207,10 @@ NEXT_PUBLIC_API_URL=https://your-backend-service-url.run.app
 - CORS enabled for cross-origin requests
 - Input validation and error handling
 
-## 🤝 Contributing
-
-This is a hackathon prototype. For production use, consider:
-
-- Adding user authentication
-- Implementing data persistence
-- Adding more AI models
-- Improving error handling
-- Adding comprehensive testing
-
 ## 📄 License
 
 MIT License - feel free to use this prototype for your projects!
 
 ---
 
-**Built with ❤️ for the hackathon** - Ready for Vercel + Cloud Run deployment!
+Built with ❤️ for the hackathon
